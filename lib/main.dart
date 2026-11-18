@@ -196,7 +196,7 @@ class _DataloggerHomeState extends State<DataloggerHome> {
   Future<void> _connect(BluetoothDevice dev) async {
     try {
       setState(() => statusText = "Connessione...");
-      await dev.connect();
+      await dev.connect(license: License.free);
       connSub?.cancel();
       connSub = dev.connectionState.listen((s) {
         if (s == BluetoothConnectionState.disconnected && mounted) {
