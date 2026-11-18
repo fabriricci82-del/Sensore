@@ -5,15 +5,23 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - run: flutter pub get
-      - run: flutter build apk --debug
+      - name: Genera progetto e dipendenze
+        run: |
+          mv lib/main.dart /tmp/main.dart
+          flutter create --project-name sensore .
+          mv /tmp/main.dart lib/main.dart
+          flutter pub add flutter_blue_plus path_provider
+          sed -i 's/<application/<uses-permission android:name="android.permission.BLUETOOTH" \/>\n    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" \/>\n    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" \/>\n    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" \/>\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" \/>\n    <application/' android/app/src/main/AndroidManifest.xml
+      - name: Compila APK
+        run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
         with:
           name: Datalogger9-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
+
