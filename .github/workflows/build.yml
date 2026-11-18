@@ -24,4 +24,3 @@ jobs:
         with:
           name: Datalogger9-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
-
